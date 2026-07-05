@@ -4,11 +4,11 @@ A personal-finance logbook for individuals and small businesses that lives in **
 
 ## Use it
 
-- **Open the app:** https://YOUR-USERNAME.github.io/scale/  *(starts blank; your data stays in your own browser)*
-- **Try the demo first:** https://YOUR-USERNAME.github.io/scale/demo.html  *(pre-filled with fictional data, safe to experiment with)*
+- **Open the app:** https://Sevenadventure.github.io/scale/  *(starts blank; your data stays in your own browser)*
+- **Try the demo first:** https://Sevenadventure.github.io/scale/demo.html  *(pre-filled with fictional data, safe to experiment with)*
 - **Download an offline copy:** grab the `.html` from the [Releases](../../releases) page and open it in any browser. That is the entire install.
 
-For organizations (program budgets, board reports, treasurer check-request tools for fiscally sponsored orgs): [org.html](https://YOUR-USERNAME.github.io/scale/org.html) · [org demo](https://YOUR-USERNAME.github.io/scale/org-demo.html)
+For organizations (program budgets, board reports, treasurer check-request tools for fiscally sponsored orgs): [org.html](https://Sevenadventure.github.io/scale/org.html) · [org demo](https://Sevenadventure.github.io/scale/org-demo.html)
 
 ## Your data & privacy
 
