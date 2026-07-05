@@ -291,7 +291,7 @@ td.amt.other{color:var(--other)}
     <div class="brand" style="flex-direction:column;align-items:flex-start;gap:4px"><div style="display:flex;align-items:baseline;gap:8px"><b>Seattle Composers Alliance</b><span>SCALE</span></div><div style="font-size:11px;color:var(--muted);letter-spacing:.01em">Logbook &amp; Estimator</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="storage" id="storageBadge"></div>
-    <div class="foot">Seattle Composers Alliance SCALE · v2.42.0 · Template<br>Your data never leaves this device.<br><span style="display:inline-block;margin-top:8px;color:var(--muted);line-height:1.4">Not legal or financial advice. Consult a qualified professional before making financial, tax, or legal decisions.</span></div>
+    <div class="foot">Seattle Composers Alliance SCALE · v2.43.0<br>Your data never leaves this device.<br><span style="display:inline-block;margin-top:8px;color:var(--muted);line-height:1.4">Not legal or financial advice. Consult a qualified professional before making financial, tax, or legal decisions.</span></div>
   </aside>
   <main>
     <div class="view" id="view"></div>
@@ -358,7 +358,9 @@ function defaultState(){
 }
 
 /* ---------- storage (localStorage with in-memory fallback) ---------- */
-const KEY="cadence.tmpl.v1";
+const KEY="cadence.v2";
+(function(){ try{ const M=[["cadence.tmpl.v1","cadence.v2"],["sevenSkyTime.tmpl.v1","sevenSkyTime.v1"],["sevenSky.financeCharges.tmpl.v1","sevenSky.financeCharges.v1"],["sevenSky.financeRates.tmpl.v1","sevenSky.financeRates.v1"],["sevenSky.timeDelivery.tmpl.v1","sevenSky.timeDelivery.v1"]];
+  for(const [o,n] of M){ try{ if(localStorage.getItem(n)==null){ const v=localStorage.getItem(o); if(v!=null) localStorage.setItem(n,v); } }catch(e){} } }catch(e){} })();
 const Store=(()=>{
   let mem=null, available=false;
   try{ const t="__c"+Date.now(); localStorage.setItem(t,"1"); localStorage.removeItem(t); available=true; }catch(e){ available=false; }
@@ -398,7 +400,7 @@ function publishFinanceCharges(){
       const parts=t.splits?t.splits.map(x=>[x.category,+x.amount||0]):[[t.category,t.amount]];
       for(const pr of parts){ const c=pr[0], a=pr[1]; if(a<0 && catset.has(c)) charges.push({d:t.date,c:c,a:Math.round(Math.abs(a)*100)/100,n:(t.description||"").slice(0,60)}); }
     }
-    localStorage.setItem("sevenSky.financeCharges.tmpl.v1", JSON.stringify({tool:"sevenSkyFinance",v:1,generatedAt:new Date().toISOString(),cats:cats,charges:charges}));
+    localStorage.setItem("sevenSky.financeCharges.v1", JSON.stringify({tool:"sevenSkyFinance",v:1,generatedAt:new Date().toISOString(),cats:cats,charges:charges}));
   }catch(e){}
 }
 function _applySnap(snap){ S=JSON.parse(snap); _undoBase=snap; Store.save(S); if(typeof selected!=="undefined"&&selected.clear)selected.clear(); render(); }
@@ -4248,7 +4250,7 @@ function viewDoomsday(root){
 
 
 /* ---------------- Time value (Time Tracker integration) ---------------- */
-const TIME_DELIVERY_KEY="sevenSky.timeDelivery.tmpl.v1";
+const TIME_DELIVERY_KEY="sevenSky.timeDelivery.v1";
 function readTimeDelivery(){
   try{ if(typeof window!=="undefined" && window.SCALE_TIME){ const d=window.SCALE_TIME.delivery(); if(d&&d.tool==="sevenSkyTime"&&d.hoursByMonth)return d; } }catch(e){}   // live, in-memory (merged time tab) — no export step
   try{ const raw=localStorage.getItem(TIME_DELIVERY_KEY); if(!raw)return null; const d=JSON.parse(raw); if(d&&d.tool==="sevenSkyTime"&&d.hoursByMonth)return d; }catch(e){} return null; }
@@ -4376,7 +4378,7 @@ function viewTimeValue(root){
   });
 
   // reverse bridge: publish the real per-bucket $/h so the Time Tracker can "Fill rates from Finance"
-  try{ const fr={}; S.timeData.buckets.forEach(bb=>{ if(bb.paid){ const v=bucketValuation(bb.name,wd.skip,wd.len); if(v.rate!=null)fr[bb.name]=Math.round(v.rate*100)/100; } }); localStorage.setItem("sevenSky.financeRates.tmpl.v1", JSON.stringify({tool:"sevenSkyFinance",v:1,generatedAt:new Date().toISOString(),rates:fr})); }catch(e){}
+  try{ const fr={}; S.timeData.buckets.forEach(bb=>{ if(bb.paid){ const v=bucketValuation(bb.name,wd.skip,wd.len); if(v.rate!=null)fr[bb.name]=Math.round(v.rate*100)/100; } }); localStorage.setItem("sevenSky.financeRates.v1", JSON.stringify({tool:"sevenSkyFinance",v:1,generatedAt:new Date().toISOString(),rates:fr})); }catch(e){}
   root.append(el("h3",{style:"margin:20px 0 8px;font-size:15px"},"What your free time needs to earn"));
   root.append(el("p",{class:"muted-note",style:"margin:0 0 8px"},"This section takes your free hours from the Time Tracker and your financial forecast to give you insight in how much to earn in your free time to reach your cushion and/or stay afloat."));
   const paidMode=S.settings.timePaidMode||"pct";
@@ -5378,11 +5380,11 @@ publishFinanceCharges();
 render();
 </script>
 <script>
-/* ===== Embedded Time & Mileage subsystem (isolated; own store sevenSkyTime.tmpl.v1) ===== */
+/* ===== Embedded Time & Mileage subsystem (isolated; own store sevenSkyTime.v1) ===== */
 (function(){
 
 "use strict";
-const KEY="sevenSkyTime.tmpl.v1";
+const KEY="sevenSkyTime.v1";
 
 /* ---------- DOM helper (same pattern as the finance tracker) ---------- */
 function el(tag,attrs,...kids){
@@ -5695,7 +5697,7 @@ function viewSetup(root){
           ? el("span",{},"Banked overtime into this week: ",el("b",{class:"num"},fmtHM(bankNow)),". This week's target is ",el("b",{class:"num"},fmtHM(adjNow)),", down from ",el("span",{class:"num"},fmtHM(baseNow)),".")
           : el("span",{},"No banked overtime yet \u2014 this week's target is the full "+fmtHM(adjNow)+".")));
   }
-  { let finB=null; try{ finB=JSON.parse(localStorage.getItem("sevenSky.financeCharges.tmpl.v1")||"null"); }catch(e){}
+  { let finB=null; try{ finB=JSON.parse(localStorage.getItem("sevenSky.financeCharges.v1")||"null"); }catch(e){}
     const finCats=(finB&&finB.cats)||[]; const sel=new Set(S.settings.transitCats||[]);
     const sec=el("div",{style:"border-top:1px solid var(--line);margin-top:14px;padding-top:12px"});
     sec.append(el("div",{class:"row",style:"gap:8px;align-items:center;margin-bottom:4px"},
@@ -6158,7 +6160,7 @@ function viewMileage(root){
   const xcCol=el("div",{style:"flex:1;min-width:260px"});
   xcCol.append(el("h3",{style:"margin:18px 0 8px"},"Transit cross-check ",el("span",{style:IH,title:"Use the checkboxes below to denote any trips that were taken by bus, rideshare, etc so they are dropped from your mileage totals."},"i")));
   const xcCard=el("div",{class:"card pad",style:"margin:0"});
-  let finB=null; try{ finB=JSON.parse(localStorage.getItem("sevenSky.financeCharges.tmpl.v1")||"null"); }catch(e){ finB=null; }
+  let finB=null; try{ finB=JSON.parse(localStorage.getItem("sevenSky.financeCharges.v1")||"null"); }catch(e){ finB=null; }
   const finCats=(finB&&finB.cats)||[]; const finList=(finB&&finB.charges)||[];
   const transitSet=new Set(S.settings.transitCats||[]);
   const xExcluded=S.mileageTransitExcluded||{}; const xDismissed=S.mileageTransitDismissed||{};
@@ -6253,7 +6255,7 @@ function renderBucketsBody(root){
   root.append(el("div",{class:"row",style:"margin-top:12px;gap:14px"},
     el("button",{class:"btn",onclick:()=>{ const used=S.buckets.map(b=>b.colorId); const free=Object.keys(GCOLORS).find(c=>!used.includes(c))||"1"; S.buckets.push({id:uid(),name:"New bucket",colorId:free,paid:false,desiredHrs:0,rate:null,monthlyIncome:null}); persist(); render(); }},"+ Add bucket"),
     el("span",{class:"muted-note"},"Drag the \u2195 handle to reorder."),
-    el("button",{class:"btn ghost",style:"margin-left:auto",onclick:()=>{ let fr=null; try{ const raw=localStorage.getItem("sevenSky.financeRates.tmpl.v1"); if(raw)fr=JSON.parse(raw); }catch(e){}
+    el("button",{class:"btn ghost",style:"margin-left:auto",onclick:()=>{ let fr=null; try{ const raw=localStorage.getItem("sevenSky.financeRates.v1"); if(raw)fr=JSON.parse(raw); }catch(e){}
       if(!fr||!fr.rates){ toast("No rates yet \u2014 open the finance tracker\u2019s Time value tab first"); return; }
       let n=0; S.buckets.forEach(b=>{ if(fr.rates[b.name]!=null){ b.rate=fr.rates[b.name]; b.monthlyIncome=null; n++; } }); persist(); render(); toast(n?("Filled "+n+" rate"+(n>1?"s":"")+" from Finance"):"No matching bucket names found"); }},"Fill rates from Time value tab")));
 }

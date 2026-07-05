@@ -291,7 +291,7 @@ td.amt.other{color:var(--other)}
     <div class="brand" style="flex-direction:column;align-items:flex-start;gap:4px"><div style="display:flex;align-items:baseline;gap:8px"><b>Seattle Composers Alliance</b><span>SCALE</span></div><div style="font-size:11px;color:var(--muted);letter-spacing:.01em">Logbook &amp; Estimator</div></div>
     <nav class="nav" id="nav"></nav>
     <div class="storage" id="storageBadge"></div>
-    <div class="foot">Seattle Composers Alliance SCALE · v2.42.0 · Org<br>Your data never leaves this device.<br><span style="display:inline-block;margin-top:8px;color:var(--muted);line-height:1.4">Not legal or financial advice. Consult a qualified professional before making financial, tax, or legal decisions.</span></div>
+    <div class="foot">Seattle Composers Alliance SCALE · v2.43.0 · Org<br>Your data never leaves this device.<br><span style="display:inline-block;margin-top:8px;color:var(--muted);line-height:1.4">Not legal or financial advice. Consult a qualified professional before making financial, tax, or legal decisions.</span></div>
   </aside>
   <main>
     <div class="view" id="view"></div>
@@ -389,6 +389,8 @@ function defaultState(){
 
 /* ---------- storage (localStorage with in-memory fallback) ---------- */
 const KEY="cadence.org.v1";
+(function(){ try{ const M=[];
+  for(const [o,n] of M){ try{ if(localStorage.getItem(n)==null){ const v=localStorage.getItem(o); if(v!=null) localStorage.setItem(n,v); } }catch(e){} } }catch(e){} })();
 const Store=(()=>{
   let mem=null, available=false;
   try{ const t="__c"+Date.now(); localStorage.setItem(t,"1"); localStorage.removeItem(t); available=true; }catch(e){ available=false; }
